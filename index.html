@@ -160,7 +160,7 @@
 
         .popup-link {
             display: inline-block;
-            background: #5a7ba7;
+            background: #21C875;
             color: white;
             padding: 8px 16px;
             text-decoration: none;
@@ -169,29 +169,7 @@
         }
 
         .popup-link:hover {
-            background: #4a6b95;
-        }
-
-        .view-toggle {
-            display: flex;
-            background: rgba(255,255,255,0.1);
-            border-radius: 8px;
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-
-        .view-btn {
-            flex: 1;
-            padding: 10px;
-            background: transparent;
-            border: none;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .view-btn.active {
-            background: rgba(255,255,255,0.2);
+            background: #1ea563;
         }
 
         @media (max-width: 768px) {
@@ -216,11 +194,6 @@
         <div class="sidebar">
             <h1>Filter Projects</h1>
             <p>Use the filters below to find the best option for you.</p>
-            
-            <div class="view-toggle">
-                <button class="view-btn active" onclick="toggleView('map')">🗺️ MAP</button>
-                <button class="view-btn" onclick="toggleView('table')">📋 TABLE</button>
-            </div>
 
             <div class="filter-group">
                 <label for="practiceFilter">Practice Area</label>
@@ -495,11 +468,11 @@
             // Update results
             updateResults();
 
-            // Adjust map view if there are filtered results
-            if (filteredProjects.length > 0) {
-                const bounds = L.featureGroup(markers.map(m => m.marker)).getBounds();
-                if (bounds.isValid()) {
-                    map.fitBounds(bounds, { padding: [20, 20] });
+            // Adjust map view to show filtered markers
+            if (filteredProjects.length > 0 && window.markerClusterGroup) {
+                const group = new L.featureGroup(window.markerClusterGroup.getLayers());
+                if (group.getBounds().isValid()) {
+                    map.fitBounds(group.getBounds(), { padding: [20, 20] });
                 }
             }
         }
@@ -508,41 +481,28 @@
             const resultsContainer = document.getElementById('resultsContainer');
             const resultCount = document.getElementById('resultCount');
             
+            resultCount.textContent = filteredProjects.length;
+            
             resultsContainer.innerHTML = '';
-
-            // Flatten projects by locations
-            let expandedResults = [];
+            
             filteredProjects.forEach(project => {
-                project.locations.forEach(location => {
-                    expandedResults.push({
-                        ...project,
-                        location: location.name
-                    });
-                });
-            });
-
-            // Update total count (now counts each location entry)
-            resultCount.textContent = expandedResults.length;
-
-            expandedResults.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'project-card';
                 card.innerHTML = `
-                    <div class="project-title">${item.title}</div>
+                    <div class="project-title">${project.title}</div>
                     <div class="project-details">
-                        ${item.practiceAreas.join(' • ')}<br>
-                        ${item.location}
+                        ${project.practiceAreas.join(' • ')}<br>
+                        ${project.locations.map(l => l.name).join(' • ')}
                     </div>
                 `;
                 
                 card.onclick = () => {
-                    window.open(item.storyMapUrl, '_blank');
+                    window.open(project.storyMapUrl, '_blank');
                 };
                 
                 resultsContainer.appendChild(card);
             });
         }
-
 
         function toggleView(view) {
             // Update active button
