@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Project Map</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css" />
     <style>
         * {
             margin: 0;
@@ -24,7 +26,7 @@
 
         .sidebar {
             width: 350px;
-            background: linear-gradient(135deg, #5a7ba7 0%, #4a6b95 100%);
+            background: linear-gradient(135deg, rgba(15,93,244,1) 19%, rgba(33,200,117,1) 89%);
             color: white;
             padding: 30px 25px;
             overflow-y: auto;
@@ -248,6 +250,7 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script>
     <script>
         const projects = [
             {
@@ -414,18 +417,26 @@
 
         function addMarkersToMap(projectList) {
             // Clear existing markers
-            markers.forEach(marker => map.removeLayer(marker));
-            markers = [];
+            if (window.markerClusterGroup) {
+                map.removeLayer(window.markerClusterGroup);
+            }
+            
+            // Create marker cluster group
+            window.markerClusterGroup = L.markerClusterGroup({
+                clusteredMarkerColor: '#21C875', // Your green color
+                maxClusterRadius: 50
+            });
 
             projectList.forEach(project => {
                 project.locations.forEach(location => {
                     const marker = L.marker(location.coordinates)
-                        .bindPopup(createPopupContent(project, location))
-                        .addTo(map);
+                        .bindPopup(createPopupContent(project, location));
                     
-                    markers.push({ marker, project, location });
+                    window.markerClusterGroup.addLayer(marker);
                 });
             });
+
+            map.addLayer(window.markerClusterGroup);
         }
 
         function createPopupContent(project, location) {
@@ -497,28 +508,41 @@
             const resultsContainer = document.getElementById('resultsContainer');
             const resultCount = document.getElementById('resultCount');
             
-            resultCount.textContent = filteredProjects.length;
-            
             resultsContainer.innerHTML = '';
-            
+
+            // Flatten projects by locations
+            let expandedResults = [];
             filteredProjects.forEach(project => {
+                project.locations.forEach(location => {
+                    expandedResults.push({
+                        ...project,
+                        location: location.name
+                    });
+                });
+            });
+
+            // Update total count (now counts each location entry)
+            resultCount.textContent = expandedResults.length;
+
+            expandedResults.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'project-card';
                 card.innerHTML = `
-                    <div class="project-title">${project.title}</div>
+                    <div class="project-title">${item.title}</div>
                     <div class="project-details">
-                        ${project.practiceAreas.join(' • ')}<br>
-                        ${project.locations.map(l => l.name).join(' • ')}
+                        ${item.practiceAreas.join(' • ')}<br>
+                        ${item.location}
                     </div>
                 `;
                 
                 card.onclick = () => {
-                    window.open(project.storyMapUrl, '_blank');
+                    window.open(item.storyMapUrl, '_blank');
                 };
                 
                 resultsContainer.appendChild(card);
             });
         }
+
 
         function toggleView(view) {
             // Update active button
