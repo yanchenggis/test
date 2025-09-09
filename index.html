@@ -160,7 +160,7 @@
 
         .popup-link {
             display: inline-block;
-            background: #21C875;
+            background: #1ea563;
             color: white;
             padding: 8px 16px;
             text-decoration: none;
@@ -169,7 +169,7 @@
         }
 
         .popup-link:hover {
-            background: #1ea563;
+            background: #21C875;
         }
 
         @media (max-width: 768px) {
@@ -372,9 +372,9 @@
 
         // Initialize the map
         function initMap() {
-            map = L.map('map').setView([4.2105, 101.9758], 4); 
+            map = L.map('map').setView([4.2105, 101.9758], 20); 
 
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
                 attribution: '© OpenStreetMap contributors'
             }).addTo(map);
 
@@ -523,3 +523,4 @@
     </script>
 </body>
 </html>
+
