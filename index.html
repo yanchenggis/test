@@ -172,6 +172,10 @@
             background: #21C875;
         }
 
+        .popup-link:visited {
+            color: #ffffff;
+        }
+
         @media (max-width: 768px) {
             .container {
                 flex-direction: column;
@@ -372,7 +376,7 @@
 
         // Initialize the map
         function initMap() {
-            map = L.map('map').setView([4.2105, 110.9758], 4.5); 
+            map = L.map('map').setView([4.2105, 110.9758], 4); 
 
             L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
                 attribution: '© OpenStreetMap contributors'
@@ -523,6 +527,7 @@
     </script>
 </body>
 </html>
+
 
 
 
