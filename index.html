@@ -289,7 +289,7 @@
             },
             {
                 id: 7,
-                title: "(Draft StoryMap) The Malaysia’s Public Housing Profile",
+                title: "(Draft StoryMap) The Malaysiaâ€™s Public Housing Profile",
                 practiceAreas: ["Environment & Social", "Urban Solutions"],
                 locations: [
                     { name: "Kuala Lumpur", coordinates: [3.1319, 101.6841] },
@@ -377,7 +377,7 @@
             map = L.map('map').setView([4.2105, 110.9758], 4); 
 
             L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap contributors'
+                attribution: 'Â© OpenStreetMap contributors'
             }).addTo(map);
 
             // Add all markers initially
@@ -402,12 +402,18 @@
                 maxClusterRadius: 50
             });
 
+            // Get current location filter
+            const locationFilter = document.getElementById('locationFilter').value;
+
             projectList.forEach(project => {
                 project.locations.forEach(location => {
-                    const marker = L.marker(location.coordinates)
-                        .bindPopup(createPopupContent(project, location));
-                    
-                    window.markerClusterGroup.addLayer(marker);
+                    // Only add marker if no location filter is active, or if the location matches the filter
+                    if (!locationFilter || location.name === locationFilter) {
+                        const marker = L.marker(location.coordinates)
+                            .bindPopup(createPopupContent(project, location));
+                        
+                        window.markerClusterGroup.addLayer(marker);
+                    }
                 });
             });
 
@@ -493,8 +499,8 @@
                 card.innerHTML = `
                     <div class="project-title">${project.title}</div>
                     <div class="project-details">
-                        ${project.practiceAreas.join(' • ')}<br>
-                        ${project.locations.map(l => l.name).join(' • ')}
+                        ${project.practiceAreas.join(' â€¢ ')}<br>
+                        ${project.locations.map(l => l.name).join(' â€¢ ')}
                     </div>
                 `;
                 
@@ -525,10 +531,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
