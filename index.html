@@ -475,14 +475,6 @@
             
             // Update results
             updateResults();
-
-            // Adjust map view to show filtered markers
-            if (filteredProjects.length > 0 && window.markerClusterGroup) {
-                const group = new L.featureGroup(window.markerClusterGroup.getLayers());
-                if (group.getBounds().isValid()) {
-                    map.fitBounds(group.getBounds(), { padding: [20, 20] });
-                }
-            }
         }
 
         function updateResults() {
@@ -531,3 +523,4 @@
     </script>
 </body>
 </html>
+
