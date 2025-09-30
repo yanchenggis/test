@@ -198,9 +198,9 @@
             <p>Use the filters below to find the best option for you.</p>
 
             <div class="filter-group">
-                <label for="analysisFilter">Urban Analysis</label>
+                <label for="analysisFilter">URBAN ANALYTICS</label>
                 <select id="analysisFilter" class="filter-select">
-                    <option value="">All Urban Analysis Areas</option>
+                    <option value="">All Urban Analytics</option>
                 </select>
             </div>
 
@@ -231,7 +231,7 @@
             {
                 id: 1,
                 title: "Covid-19 Crisis: Atlas of Community Resilience",
-                practiceAreas: ["Impacts of COVID-19", "Urban Analysis"], 
+                practiceAreas: ["Impacts of COVID-19"], 
                 locations: [
                     { name: "Malaysia", coordinates: [4.2105, 101.9758] }
                 ],
@@ -240,7 +240,7 @@
             {
                 id: 2,
                 title: "Warisan KL: Creative Industries and Cultural Services",
-                practiceAreas: ["Creative and Cultural Industries", "Urban Analysis"], 
+                practiceAreas: ["Creative and Cultural Industries"], 
                 locations: [
                     { name: "Kuala Lumpur", coordinates: [3.1319, 101.6841] },
                     { name: "Selangor", coordinates: [3.5092, 101.5248] },
@@ -251,7 +251,7 @@
             {
                 id: 3,
                 title: "Demographics of GTWHS: Building Use, Population & Employment",
-                practiceAreas: ["Demography", "Urban Analysis"], 
+                practiceAreas: ["Demography"], 
                 locations: [
                     { name: "Penang", coordinates: [5.4141, 100.3285] }
                 ],
@@ -260,7 +260,7 @@
             {
                 id: 4,
                 title: "Covid-19 Movement Control Order Effect on Kuala Lumpur",
-                practiceAreas: ["Impacts of COVID-19", "Urban Analysis"], 
+                practiceAreas: ["Impacts of COVID-19"], 
                 locations: [
                     { name: "Kuala Lumpur", coordinates: [3.1319, 101.6841] }
                 ],
@@ -438,7 +438,6 @@
         function populateFilters() {
             // Get unique practice areas
             const practiceAreas = [...new Set(projects.flatMap(p => p.practiceAreas))].sort();
-            // 💡 CHANGE 3: Update ID reference
             const practiceSelect = document.getElementById('analysisFilter');
             
             practiceAreas.forEach(area => {
@@ -461,12 +460,10 @@
         }
 
         function applyFilters() {
-            // 💡 CHANGE 4: Update ID reference and variable name
             const analysisFilter = document.getElementById('analysisFilter').value;
             const locationFilter = document.getElementById('locationFilter').value;
 
             filteredProjects = projects.filter(project => {
-                // 💡 CHANGE 5: Update variable usage
                 const matchesPractice = !analysisFilter || project.practiceAreas.includes(analysisFilter);
                 const matchesLocation = !locationFilter || project.locations.some(loc => loc.name === locationFilter);
                 
@@ -517,7 +514,7 @@
             console.log('Switched to', view, 'view');
         }
 
-        // 💡 CHANGE 6: Update event listener ID
+        // Update event listener ID
         document.getElementById('analysisFilter').addEventListener('change', applyFilters);
         document.getElementById('locationFilter').addEventListener('change', applyFilters);
 
@@ -526,3 +523,4 @@
     </script>
 </body>
 </html>
+
