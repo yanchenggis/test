@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Interactive Project Map</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css" />
@@ -95,6 +95,10 @@
             transform: translateY(-2px);
         }
 
+        .filter-btn:active {
+            transform: translateY(0);
+        }
+
         .results-section {
             margin-top: 30px;
             padding-top: 25px;
@@ -119,6 +123,10 @@
         .project-card:hover {
             background: rgba(255,255,255,0.2);
             transform: translateX(5px);
+        }
+
+        .project-card:active {
+            transform: translateX(3px);
         }
 
         .project-title {
@@ -156,6 +164,7 @@
         .popup-details {
             margin-bottom: 10px;
             color: #666;
+            font-size: 13px;
         }
 
         .leaflet-popup-content .popup-link {
@@ -166,13 +175,13 @@
             text-decoration: none;
             border-radius: 5px;
             transition: background 0.3s ease;
+            font-size: 14px;
         }
 
         .leaflet-popup-content .popup-link:hover {
             background: #21C875;
             color: #ffffff;
         }
-
 
         @media (max-width: 768px) {
             .container {
@@ -182,11 +191,97 @@
             .sidebar {
                 width: 100%;
                 height: auto;
-                max-height: 50vh;
+                padding: 20px 15px;
+                overflow-y: visible;
+            }
+
+            .sidebar h1 {
+                font-size: 24px;
+                margin-bottom: 10px;
+            }
+
+            .sidebar p {
+                font-size: 14px;
+                margin-bottom: 20px;
+            }
+
+            .filter-group {
+                margin-bottom: 15px;
+            }
+
+            .filter-group label {
+                font-size: 12px;
+                margin-bottom: 6px;
+            }
+
+            .filter-select {
+                padding: 10px 12px;
+                font-size: 14px;
+            }
+
+            .filter-btn {
+                padding: 12px;
+                font-size: 14px;
+                margin-bottom: 15px;
+            }
+
+            .results-section {
+                margin-top: 20px;
+                padding-top: 15px;
+            }
+
+            .results-header {
+                font-size: 16px;
+                margin-bottom: 15px;
+            }
+
+            .project-card {
+                padding: 12px;
+                margin-bottom: 12px;
+            }
+
+            .project-title {
+                font-size: 14px;
+            }
+
+            .project-details {
+                font-size: 11px;
             }
             
             .map-container {
                 height: 50vh;
+                min-height: 300px;
+            }
+
+            .leaflet-popup-content {
+                min-width: 180px;
+            }
+
+            .popup-title {
+                font-size: 14px;
+            }
+
+            .popup-details {
+                font-size: 12px;
+            }
+
+            .leaflet-popup-content .popup-link {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar {
+                padding: 15px 12px;
+            }
+
+            .sidebar h1 {
+                font-size: 20px;
+            }
+
+            .sidebar p {
+                font-size: 13px;
             }
         }
     </style>
@@ -288,7 +383,7 @@
             {
                 id: 7,
                 title: "Warisan KL: Creative Industries and Cultural Services",
-                practiceAreas: ["Creative & Cultural "], 
+                practiceAreas: ["Creative & Cultural"], 
                 locations: [
                     { name: "Kuala Lumpur", coordinates: [3.1319, 101.6841] },
                     { name: "Selangor", coordinates: [3.5092, 101.5248] },
@@ -299,45 +394,37 @@
         ];
 
         let map;
-        let markers = [];
         let filteredProjects = [...projects];
 
-        // Initialize the map
         function initMap() {
-            map = L.map('map').setView([4.2105, 110.9758], 4); 
+            map = L.map('map', {
+                tap: true,
+                touchZoom: true,
+                dragging: true
+            }).setView([4.2105, 110.9758], 4); 
 
             L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
                 attribution: '&copy; OpenStreetMap contributors'
             }).addTo(map);
 
-            // Add all markers initially
             addMarkersToMap(projects);
-            
-            // Populate filter dropdowns
             populateFilters();
-            
-            // Update results count
             updateResults();
         }
 
         function addMarkersToMap(projectList) {
-            // Clear existing markers
             if (window.markerClusterGroup) {
                 map.removeLayer(window.markerClusterGroup);
             }
             
-            // Create marker cluster group
             window.markerClusterGroup = L.markerClusterGroup({
-                clusteredMarkerColor: '#21C875', 
                 maxClusterRadius: 50
             });
 
-            // Get current location filter
             const locationFilter = document.getElementById('locationFilter').value;
 
             projectList.forEach(project => {
                 project.locations.forEach(location => {
-                    // Only add marker if no location filter is active, or if the location matches the filter
                     if (!locationFilter || location.name === locationFilter) {
                         const marker = L.marker(location.coordinates)
                             .bindPopup(createPopupContent(project, location));
@@ -366,7 +453,6 @@
         }
 
         function populateFilters() {
-            // Get unique practice areas
             const practiceAreas = [...new Set(projects.flatMap(p => p.practiceAreas))].sort();
             const practiceSelect = document.getElementById('analysisFilter');
             
@@ -377,7 +463,6 @@
                 practiceSelect.appendChild(option);
             });
 
-            // Get unique locations
             const locations = [...new Set(projects.flatMap(p => p.locations.map(l => l.name)))].sort();
             const locationSelect = document.getElementById('locationFilter');
             
@@ -400,10 +485,7 @@
                 return matchesPractice && matchesLocation;
             });
 
-            // Update map markers
             addMarkersToMap(filteredProjects);
-            
-            // Update results
             updateResults();
         }
 
@@ -412,7 +494,6 @@
             const resultCount = document.getElementById('resultCount');
             
             resultCount.textContent = filteredProjects.length;
-            
             resultsContainer.innerHTML = '';
             
             filteredProjects.forEach(project => {
@@ -434,25 +515,10 @@
             });
         }
 
-        function toggleView(view) {
-            // Update active button
-            document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            // For now, we only have map view implemented
-            // You could add table view functionality here
-            console.log('Switched to', view, 'view');
-        }
-
-        // Update event listener ID
         document.getElementById('analysisFilter').addEventListener('change', applyFilters);
         document.getElementById('locationFilter').addEventListener('change', applyFilters);
 
-        // Initialize the map when the page loads
         window.onload = initMap;
     </script>
 </body>
 </html>
-
-
-
