@@ -149,6 +149,27 @@
             width: 100%;
         }
 
+        .map-info-note {
+            position: absolute;
+            top: 10px;
+            left: 60px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            z-index: 1000;
+            font-size: 13px;
+            color: #333;
+            max-width: 280px;
+            line-height: 1.4;
+        }
+
+        .map-info-note .info-icon {
+            color: #0F5DF4;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
         .leaflet-popup-content {
             text-align: center;
             min-width: 200px;
@@ -253,6 +274,15 @@
                 min-height: 300px;
             }
 
+            .map-info-note {
+                top: 10px;
+                left: 10px;
+                right: 10px;
+                max-width: none;
+                font-size: 11px;
+                padding: 8px 12px;
+            }
+
             .leaflet-popup-content {
                 min-width: 180px;
             }
@@ -315,6 +345,9 @@
         </div>
 
         <div class="map-container">
+            <div class="map-info-note">
+                <span class="info-icon">ℹ️</span>Note: Map markers show project locations. One project may have multiple locations.
+            </div>
             <div id="map"></div>
         </div>
     </div>
