@@ -162,12 +162,21 @@
             color: #333;
             max-width: 280px;
             line-height: 1.4;
+            transition: opacity 0.3s ease;
         }
 
         .map-info-note .info-icon {
             color: #0F5DF4;
             font-weight: bold;
             margin-right: 5px;
+        }
+
+        .map-container:hover .map-info-note {
+            opacity: 0.3;
+        }
+
+        .map-info-note.popup-open {
+            opacity: 0.2;
         }
 
         .leaflet-popup-content {
@@ -439,6 +448,17 @@
             L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
                 attribution: '&copy; OpenStreetMap contributors'
             }).addTo(map);
+
+            // Add popup open/close event listeners
+            const infoNote = document.querySelector('.map-info-note');
+            
+            map.on('popupopen', function() {
+                infoNote.classList.add('popup-open');
+            });
+            
+            map.on('popupclose', function() {
+                infoNote.classList.remove('popup-open');
+            });
 
             addMarkersToMap(projects);
             populateFilters();
