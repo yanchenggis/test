@@ -434,7 +434,7 @@
                 tap: true,
                 touchZoom: true,
                 dragging: true
-            }).setView([4.2105, 101.5758], 6); 
+            }).setView([4.2105, 101.5758], 7); 
 
             L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
                 attribution: '&copy; OpenStreetMap contributors'
@@ -462,7 +462,7 @@
             }
             
             window.markerClusterGroup = L.markerClusterGroup({
-                maxClusterRadius: 50
+                maxClusterRadius: 80
             });
 
             const locationFilter = document.getElementById('locationFilter').value;
@@ -566,5 +566,6 @@
     </script>
 </body>
 </html>
+
 
 
